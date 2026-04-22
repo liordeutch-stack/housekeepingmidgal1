@@ -158,7 +158,7 @@ export default function DashboardClient({ profile, apartments, payments: initPay
 
   async function registerPaymentForm() {
     const { apt, method, reference, bankName, checkNumber, checkDate, last4 } = payForm
-    await markPaid(apt, method, reference, { bank_name: bankName, check_number: checkNumber, check_date: checkDate || undefined, last4 })
+    await markPaid(apt, method, reference, { bank_name: bankName, check_number: checkNumber, ...(checkDate ? { check_date: checkDate } : {}), last4 })
     setModal(null)
     setPayMethod(null)
   }
