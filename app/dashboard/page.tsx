@@ -9,6 +9,7 @@ export default async function DashboardPage() {
 
   const { data: profile } = await supabase
     .from('profiles').select('*').eq('id', user.id).single()
+  if (!profile) redirect('/login')
 
   const [
     { data: apartments },
@@ -18,6 +19,7 @@ export default async function DashboardPage() {
     { data: issues },
     { data: budgetItems },
     { data: profiles },
+    { data: paymentRequests },
   ] = await Promise.all([
     supabase.from('apartments').select('*').order('id'),
     supabase.from('payments').select('*').order('month', { ascending: false }),
@@ -26,6 +28,7 @@ export default async function DashboardPage() {
     supabase.from('issues').select('*, suppliers(name)').order('created_at', { ascending: false }),
     supabase.from('budget_items').select('*').order('sort_order'),
     supabase.from('profiles').select('*').order('full_name'),
+    supabase.from('payment_requests').select('*').order('created_at', { ascending: false }),
   ])
 
   return (
@@ -38,6 +41,7 @@ export default async function DashboardPage() {
       issues={issues || []}
       budgetItems={budgetItems || []}
       profiles={profiles || []}
+      paymentRequests={paymentRequests || []}
     />
   )
 }
