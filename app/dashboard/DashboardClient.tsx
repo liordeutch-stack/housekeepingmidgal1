@@ -32,6 +32,15 @@ const COLORS = {
   text: '#2C2118', text2: '#7A6A5A', text3: '#A89A8A',
 }
 
+const btnStyle = (v: string = 'default'): React.CSSProperties => ({
+  padding: v === 'sm' ? '5px 12px' : '8px 16px',
+  borderRadius: 8, fontFamily: 'inherit', fontWeight: 600,
+  fontSize: v === 'sm' ? 12 : 13, cursor: 'pointer',
+  border: v === 'primary' ? 'none' : v === 'teal' ? 'none' : `1.5px solid ${COLORS.warm}`,
+  background: v === 'primary' ? COLORS.teal : v === 'teal' ? COLORS.teal : v === 'coral' ? COLORS.coral : '#fff',
+  color: ['primary','teal','coral'].includes(v) ? '#fff' : COLORS.text,
+})
+
 const S: Record<string, React.CSSProperties> = {
   app: { fontFamily: "'Nunito', system-ui, sans-serif", background: COLORS.cream, minHeight: '100vh', direction: 'rtl' as const },
   topbar: { background: '#fff', borderBottom: `1px solid ${COLORS.warm}`, padding: '0 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 60 },
@@ -39,14 +48,6 @@ const S: Record<string, React.CSSProperties> = {
   main: { flex: 1, padding: '1.5rem', minWidth: 0, overflowX: 'hidden' as const },
   card: { background: '#fff', border: `1px solid ${COLORS.warm}`, borderRadius: 16, padding: '1.25rem', marginBottom: '1rem' },
   metric: { background: '#fff', border: `1px solid ${COLORS.warm}`, borderRadius: 16, padding: '1.1rem 1.25rem' },
-  btn: (v: string = 'default'): React.CSSProperties => ({
-    padding: v === 'sm' ? '5px 12px' : '8px 16px',
-    borderRadius: 8, fontFamily: 'inherit', fontWeight: 600,
-    fontSize: v === 'sm' ? 12 : 13, cursor: 'pointer',
-    border: v === 'primary' ? 'none' : v === 'teal' ? 'none' : `1.5px solid ${COLORS.warm}`,
-    background: v === 'primary' ? COLORS.teal : v === 'teal' ? COLORS.teal : v === 'coral' ? COLORS.coral : '#fff',
-    color: ['primary','teal','coral'].includes(v) ? '#fff' : COLORS.text,
-  }),
   input: { fontFamily: 'inherit', fontSize: 13, padding: '9px 12px', border: `1.5px solid ${COLORS.warm}`, borderRadius: 8, background: COLORS.cream, color: COLORS.text, width: '100%' },
   label: { fontSize: 12, fontWeight: 600, color: COLORS.text2, display: 'block', marginBottom: 5 },
   th: { textAlign: 'right' as const, padding: '8px 10px', color: COLORS.text3, fontWeight: 600, fontSize: 11, textTransform: 'uppercase' as const, letterSpacing: '0.05em', borderBottom: `2px solid ${COLORS.cream2}` },
@@ -267,8 +268,8 @@ export default function DashboardClient({ profile, apartments, payments: initPay
           <h3 style={{ fontSize: 17, fontWeight: 700, color: COLORS.text, marginBottom: '1.25rem' }}>{title}</h3>
           {children}
           <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end', marginTop: '1.25rem' }}>
-            <button style={S.btn()} onClick={() => setModal(null)}>ביטול</button>
-            <button style={S.btn('primary')} onClick={onSave}>שמור</button>
+            <button style={btnStyle()} onClick={() => setModal(null)}>ביטול</button>
+            <button style={btnStyle('primary')} onClick={onSave}>שמור</button>
           </div>
         </div>
       </div>
@@ -292,8 +293,8 @@ export default function DashboardClient({ profile, apartments, payments: initPay
           <select value={curMonth} onChange={e => setCurMonth(e.target.value)} style={{ fontFamily: 'inherit', fontSize: 13, padding: '6px 12px', border: `1px solid ${COLORS.warm}`, borderRadius: 8, background: COLORS.cream, color: COLORS.text, cursor: 'pointer' }}>
             {['2025-08','2025-09','2025-10','2025-11','2025-12','2026-01','2026-02','2026-03','2026-04','2026-05','2026-06'].map(m => <option key={m} value={m}>{monthLabel(m)}</option>)}
           </select>
-          <button style={S.btn('teal')} onClick={exportCSV}>CSV ↓</button>
-          <button style={S.btn()} onClick={logout}>יציאה</button>
+          <button style={btnStyle('teal')} onClick={exportCSV}>CSV ↓</button>
+          <button style={btnStyle()} onClick={logout}>יציאה</button>
           <div style={{ width: 34, height: 34, borderRadius: '50%', background: COLORS.coral, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, color: '#fff' }}>
             {profile.full_name?.slice(0,2) || 'לד'}
           </div>
@@ -347,7 +348,7 @@ export default function DashboardClient({ profile, apartments, payments: initPay
                 <div style={S.card}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
                     <div><div style={{ fontSize: 15, fontWeight: 700 }}>סטטוס גבייה</div><div style={{ fontSize: 12, color: COLORS.text3 }}>{monthLabel(curMonth)}</div></div>
-                    <button style={S.btn('primary')} onClick={() => setTab('vaad')}>לדף גבייה ←</button>
+                    <button style={btnStyle('primary')} onClick={() => setTab('vaad')}>לדף גבייה ←</button>
                   </div>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 8 }}>
                     {monthPmts.map(({ apt, paid }) => (
@@ -387,8 +388,8 @@ export default function DashboardClient({ profile, apartments, payments: initPay
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
                 <div style={{ fontSize: 15, fontWeight: 700 }}>גבייה — {monthLabel(curMonth)}</div>
                 <div style={{ display: 'flex', gap: 8 }}>
-                  <button style={S.btn('sm')} onClick={() => setModal('bit-modal')}>שלח Bit לכולם</button>
-                  <button style={S.btn('primary')} onClick={markAllPaid}>✓ סמן הכל כשולם</button>
+                  <button style={btnStyle('sm')} onClick={() => setModal('bit-modal')}>שלח Bit לכולם</button>
+                  <button style={btnStyle('primary')} onClick={markAllPaid}>✓ סמן הכל כשולם</button>
                 </div>
               </div>
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
@@ -408,9 +409,9 @@ export default function DashboardClient({ profile, apartments, payments: initPay
                       <td style={{ ...S.td, fontSize: 12, color: COLORS.text3 }}>{payment?.paid_date || '-'}</td>
                       <td style={S.td}>
                         <div style={{ display: 'flex', gap: 6 }}>
-                          {!paid && <button style={S.btn('primary')} onClick={() => { setPayForm(f => ({ ...f, apt: apt.id })); setModal('pay-modal') }}>רשום</button>}
+                          {!paid && <button style={btnStyle('primary')} onClick={() => { setPayForm(f => ({ ...f, apt: apt.id })); setModal('pay-modal') }}>רשום</button>}
                           {!paid && <button style={{ ...S.btn('sm'), background: '#E6F7F1', color: '#0F6E56', border: 'none', fontSize: 11 }} onClick={() => { setPayForm(f => ({ ...f, apt: apt.id, phone: apt.owner_phone || '' })); setModal('bit-send-modal') }}>Bit</button>}
-                          {paid && <button style={S.btn('sm')} onClick={() => cancelPayment(apt.id)}>בטל</button>}
+                          {paid && <button style={btnStyle('sm')} onClick={() => cancelPayment(apt.id)}>בטל</button>}
                         </div>
                       </td>
                     </tr>
@@ -471,7 +472,7 @@ export default function DashboardClient({ profile, apartments, payments: initPay
             <div style={S.card}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
                 <div style={{ fontSize: 15, fontWeight: 700 }}>תקציב — תכנון מול ביצוע</div>
-                {isManager && <button style={S.btn('primary')} onClick={saveBudgetActuals}>שמור ביצוע</button>}
+                {isManager && <button style={btnStyle('primary')} onClick={saveBudgetActuals}>שמור ביצוע</button>}
               </div>
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
                 <thead><tr>
@@ -529,7 +530,7 @@ export default function DashboardClient({ profile, apartments, payments: initPay
               <div style={S.card}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
                   <div style={{ fontSize: 15, fontWeight: 700 }}>ספקים</div>
-                  {isManager && <button style={S.btn('primary')} onClick={() => { setEditSup(null); setSupForm({ name: '', category: 'ניקיון', phone: '', email: '', reason: '', contract_start: '', payment_terms: '', contact_name: '' }); setModal('sup-modal') }}>+ ספק חדש</button>}
+                  {isManager && <button style={btnStyle('primary')} onClick={() => { setEditSup(null); setSupForm({ name: '', category: 'ניקיון', phone: '', email: '', reason: '', contract_start: '', payment_terms: '', contact_name: '' }); setModal('sup-modal') }}>+ ספק חדש</button>}
                 </div>
                 {suppliers.map(s => (
                   <div key={s.id} style={{ border: `1px solid ${COLORS.warm}`, borderRadius: 12, padding: '1rem 1.25rem', marginBottom: 10 }}>
@@ -538,7 +539,7 @@ export default function DashboardClient({ profile, apartments, payments: initPay
                         <div style={{ fontWeight: 700, fontSize: 15, color: COLORS.text }}>{s.name}</div>
                         <div style={{ marginTop: 4 }}>{badge('blue', s.category)}</div>
                       </div>
-                      {isManager && <button style={S.btn('sm')} onClick={() => { setEditSup(s); setSupForm({ name: s.name, category: s.category, phone: s.phone || '', email: s.email || '', reason: s.reason || '', contract_start: s.contract_start || '', payment_terms: s.payment_terms || '', contact_name: s.contact_name || '' }); setModal('sup-modal') }}>ערוך</button>}
+                      {isManager && <button style={btnStyle('sm')} onClick={() => { setEditSup(s); setSupForm({ name: s.name, category: s.category, phone: s.phone || '', email: s.email || '', reason: s.reason || '', contract_start: s.contract_start || '', payment_terms: s.payment_terms || '', contact_name: s.contact_name || '' }); setModal('sup-modal') }}>ערוך</button>}
                     </div>
                     {s.reason && <div style={{ marginTop: 10, padding: '8px 12px', background: COLORS.tealLight, borderRadius: 8, fontSize: 13, color: COLORS.teal }}><span style={{ fontWeight: 600 }}>סיבת בחירה: </span>{s.reason}</div>}
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8, marginTop: 10 }}>
@@ -555,7 +556,7 @@ export default function DashboardClient({ profile, apartments, payments: initPay
                 <div style={S.card}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
                     <div style={{ fontSize: 15, fontWeight: 700 }}>חשבוניות</div>
-                    <button style={S.btn('primary')} onClick={() => setModal('inv-modal')}>+ חשבונית</button>
+                    <button style={btnStyle('primary')} onClick={() => setModal('inv-modal')}>+ חשבונית</button>
                   </div>
                   <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
                     <thead><tr>{['תאריך','ספק','תיאור','סכום','סטטוס',''].map(h => <th key={h} style={S.th}>{h}</th>)}</tr></thead>
@@ -567,7 +568,7 @@ export default function DashboardClient({ profile, apartments, payments: initPay
                           <td style={S.td}>{inv.description}</td>
                           <td style={{ ...S.td, fontWeight: 600 }}>₪{inv.amount.toLocaleString()}</td>
                           <td style={S.td}>{statusBadge(inv.status)}</td>
-                          <td style={S.td}>{inv.status === 'pending' && <button style={S.btn('primary')} onClick={() => payInvoice(inv.id)}>שלם</button>}</td>
+                          <td style={S.td}>{inv.status === 'pending' && <button style={btnStyle('primary')} onClick={() => payInvoice(inv.id)}>שלם</button>}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -582,7 +583,7 @@ export default function DashboardClient({ profile, apartments, payments: initPay
             <div style={S.card}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
                 <div style={{ fontSize: 15, fontWeight: 700 }}>תקלות ופניות</div>
-                <button style={S.btn('primary')} onClick={() => setModal('iss-modal')}>+ תקלה חדשה</button>
+                <button style={btnStyle('primary')} onClick={() => setModal('iss-modal')}>+ תקלה חדשה</button>
               </div>
               <div style={{ display: 'flex', gap: 8, marginBottom: '1rem' }}>
                 <input type="text" placeholder="חיפוש תקלות..." value={issSearch} onChange={e => setIssSearch(e.target.value)} style={{ ...S.input, flex: 1 }} />
@@ -602,7 +603,7 @@ export default function DashboardClient({ profile, apartments, payments: initPay
                       <td style={{ ...S.td, fontSize: 11, color: COLORS.text3 }}>{i.created_at?.slice(0,10)}</td>
                       <td style={S.td}>{statusBadge(i.status)}</td>
                       <td style={S.td}>
-                        <button style={S.btn('sm')} onClick={() => advanceIssue(i.id, i.status)}>
+                        <button style={btnStyle('sm')} onClick={() => advanceIssue(i.id, i.status)}>
                           {{ open: 'התחל', inprogress: 'סגור', done: 'פתח' }[i.status] || 'עדכן'}
                         </button>
                       </td>
